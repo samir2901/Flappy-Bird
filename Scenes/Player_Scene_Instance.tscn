@@ -1,0 +1,37 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://Scenes/Player_Scene_Instance.gd" type="Script" id=1]
+[ext_resource path="res://Assets/sprites/bird_orange_0.png" type="Texture" id=2]
+[ext_resource path="res://Assets/sprites/bird_orange_1.png" type="Texture" id=3]
+[ext_resource path="res://Assets/sprites/bird_orange_2.png" type="Texture" id=4]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 4 ) ],
+"loop": true,
+"name": "fly",
+"speed": 7.0
+} ]
+
+[sub_resource type="CircleShape2D" id=2]
+radius = 6.5
+
+[node name="PlayerBird" type="RigidBody2D"]
+position = Vector2( -36, 112.8 )
+gravity_scale = 5.0
+contacts_reported = 3
+contact_monitor = true
+linear_damp = 0.0
+angular_damp = 0.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+frames = SubResource( 1 )
+animation = "fly"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 2 )
+

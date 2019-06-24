@@ -1,0 +1,116 @@
+[gd_scene load_steps=16 format=2]
+
+[ext_resource path="res://Assets/sprites/background_day.png" type="Texture" id=1]
+[ext_resource path="res://Scenes/Player_Scene_Instance.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scenes/Camera2D.gd" type="Script" id=3]
+[ext_resource path="res://Scenes/SpawningGround.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Scenes/SpawningPipe.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Assets/sprites/instructions.png" type="Texture" id=6]
+[ext_resource path="res://Assets/fonts/font_score.ttf" type="DynamicFontData" id=7]
+[ext_resource path="res://Scenes/GameOver.gd" type="Script" id=8]
+[ext_resource path="res://Assets/sprites/label_game_over.png" type="Texture" id=9]
+[ext_resource path="res://Assets/sprites/button_play_normal.png" type="Texture" id=10]
+[ext_resource path="res://Assets/sprites/button_play_pressed.png" type="Texture" id=11]
+[ext_resource path="res://Scenes/RestartBtn.gd" type="Script" id=12]
+
+[sub_resource type="GDScript" id=1]
+resource_name = "Button Instructions"
+script/source = "# Instruction Button::Builtin Script
+
+extends TextureButton
+
+func _ready():
+	connect(\"pressed\",self,\"_on_pressed\")
+	pass
+	
+func _on_pressed():
+	var bird = get_tree().get_root().get_child(0).get_node(\"PlayerBird\")
+	if bird:
+		bird.set_state(bird.STATE_FLAPPING)
+	hide()
+	pass"
+
+[sub_resource type="DynamicFont" id=2]
+size = 14
+font_data = ExtResource( 7 )
+
+[sub_resource type="GDScript" id=3]
+script/source = "extends Label
+
+var score = 0
+
+func _process(delta):
+	var bird = get_tree().get_root().get_child(0).get_node(\"PlayerBird\")
+	if Input.is_action_just_pressed(\"Flap\"):
+		if bird:
+			if bird.get_linear_velocity().length() != 0:
+				score += 1
+				set_text(str(score))
+				pass
+	pass"
+
+[node name="World" type="Node2D"]
+
+[node name="Background" type="CanvasLayer" parent="."]
+editor/display_folded = true
+layer = -1
+
+[node name="Sprite" type="Sprite" parent="Background"]
+texture = ExtResource( 1 )
+centered = false
+
+[node name="PlayerBird" parent="." instance=ExtResource( 2 )]
+position = Vector2( -15, 54.069 )
+
+[node name="camera" type="Camera2D" parent="."]
+position = Vector2( 4, 0 )
+offset = Vector2( -36, 0 )
+anchor_mode = 0
+current = true
+script = ExtResource( 3 )
+
+[node name="SpawningGround" parent="." instance=ExtResource( 4 )]
+
+[node name="SpawningPipe" parent="." instance=ExtResource( 5 )]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="InstructionBtn" type="TextureButton" parent="CanvasLayer"]
+margin_left = 41.2982
+margin_top = 107.783
+margin_right = 98.2982
+margin_bottom = 156.783
+texture_normal = ExtResource( 6 )
+script = SubResource( 1 )
+
+[node name="Score" type="Label" parent="CanvasLayer"]
+margin_top = 15.0
+margin_right = 144.0
+margin_bottom = 32.0
+custom_fonts/font = SubResource( 2 )
+custom_colors/font_color_shadow = Color( 0.0431373, 0.0431373, 0.0431373, 1 )
+text = "0"
+align = 1
+script = SubResource( 3 )
+
+[node name="GameOver" type="Container" parent="CanvasLayer"]
+editor/display_folded = true
+visible = false
+script = ExtResource( 8 )
+
+[node name="GameOverLabel" type="TextureRect" parent="CanvasLayer/GameOver"]
+margin_left = 24.0
+margin_top = 107.0
+margin_right = 120.0
+margin_bottom = 147.0
+texture = ExtResource( 9 )
+
+[node name="RestartBtn" type="TextureButton" parent="CanvasLayer/GameOver"]
+margin_left = 46.0
+margin_top = 144.0
+margin_right = 98.0
+margin_bottom = 184.0
+texture_normal = ExtResource( 10 )
+texture_pressed = ExtResource( 11 )
+script = ExtResource( 12 )
+
